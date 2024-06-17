@@ -1,3 +1,7 @@
 This project creates a simple database for Customer and orders in django and using Django Restframework to create APIs to perform create, read, update and delete operation on the database.
 
 The user of the database is authenticated using OpenID Connect
+
+http://127.0.0.1:8000/api/get-customers/?customer_id=b5754a20-a458-4c92-b58f-8d398a2f0079
+http://127.0.0.1:8000/api/get-customers/
+
