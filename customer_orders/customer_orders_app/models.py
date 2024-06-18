@@ -49,7 +49,8 @@ class Order(BaseModel):
         item: The name of the item ordered.
         amount: The total amount of the item ordered.
     """
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(
+        Customer, on_delete=models.CASCADE, related_name='orders')
     item = models.CharField(max_length=50)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
 

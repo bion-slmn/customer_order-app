@@ -6,7 +6,41 @@ from .models import Customer, Order
 from rest_framework import serializers
 
 
-class CustomerSerialiser(serializers.ModelSerializer):
+class BaseSerialiser(serializers.ModelSerializer):
+    def create(self, validated_data):
+        """
+        Calls the create method of the superclass with 
+        the provided validated data.
+
+        Args:
+            validated_data: The data to create the object with.
+
+        Returns:
+            The result of calling the create method of the superclass.
+        """
+        return super().create(validated_data)
+    
+    def update(self, instance, validated_data):
+        """
+        Updates the fields of an object instance with the provided
+        validated data.
+
+        Args:
+            instance: The object instance to update.
+            validated_data: A dictionary containing the data to
+            update the object instance with.
+
+        Returns:
+            The updated object instance.
+        """
+        for key, value in validated_data.items():
+            if hasattr(instance, key):
+                setattr(instance, key, value)
+        instance.save()
+        return instance
+
+
+class CustomerSerialiser(BaseSerialiser):
     """
     Serializes Customer objects to represent their ID and name fields.
 
@@ -17,36 +51,20 @@ class CustomerSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ['id', 'name']
-
-    def create(self, validated_data: dict) -> Customer:
-        """
-        Creates a new Customer object using the provided validated data.
-
-        Args:
-            validated_data: A dictionary containing the data to create
-            the Customer object.
-
-        Returns:
-            The newly created Customer object.
-        """
-        return Customer.objects.create(**validated_data)
     
-    def update(self, instance: Customer, validated_data:dict) -> Customer:
-        """
-        Updates the fields of a Customer instance with the
-        provided validated data.
+class OrderSerialiser(BaseSerialiser):
+    """
+    Serializes Order objects to represent their ID, item,
+    amount, and creation timestamp.
 
-        Args:
-            instance: The Customer instance to update.
-            validated_data: A dictionary containing the data to
-            update the Customer instance with.
+    Provides methods to create a new Order object
+    and update an existing Order object.
+    """
+    id = serializers.UUIDField(read_only=True)
+    created_at = serializers.DateTimeField(format="%B %d, %Y, %I:%M %p", read_only=True)
+    customer = CustomerSerialiser(read_only=True)
 
-        Returns:
-            The updated Customer instance.
-        """
-        for key, value in validated_data.items():
-            if hasattr(instance, key):
-                setattr(instance, key, value)
-        instance.save()
-        return instance
-        
+    class Meta:
+        model = Order
+        fields = ['id', 'item', 'amount', 'created_at', 'customer']
+

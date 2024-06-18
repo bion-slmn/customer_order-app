@@ -137,3 +137,9 @@ REST_FRAMEWORK = {
         'user': '500/hour',  
     }
 }
+
+# improving speed by passing limited number of items
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
