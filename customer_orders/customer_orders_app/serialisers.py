@@ -50,7 +50,7 @@ class CustomerSerialiser(BaseSerialiser):
     id = serializers.UUIDField(read_only=True)
     class Meta:
         model = Customer
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'phone_number']
     
 class OrderSerialiser(BaseSerialiser):
     """
@@ -67,4 +67,5 @@ class OrderSerialiser(BaseSerialiser):
     class Meta:
         model = Order
         fields = ['id', 'item', 'amount', 'created_at', 'customer']
+        ordering = ['-created_at']
 

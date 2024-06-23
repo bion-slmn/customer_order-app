@@ -5,6 +5,7 @@ database tables
 '''
 from django.db import models
 import uuid
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class BaseModel(models.Model):
@@ -18,23 +19,23 @@ class BaseModel(models.Model):
         primary_key=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        ordering = ['created_at']
         abstract = True
 
 
 class Customer(BaseModel):
     """
     Represents a customer in the system.
-
-    Args:
-        name: The name of the customer.
-
-    Returns:
-        str: The name of the customer.
     """
     name = models.CharField(max_length=50)
+    phone_number = PhoneNumberField()
+
+    def save(self, *args, **kwargs):
+        if not isinstance(self.name, str):
+            raise ValueError("Name must be a string")
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.name
@@ -51,8 +52,10 @@ class Order(BaseModel):
     """
     customer = models.ForeignKey(
         Customer, on_delete=models.CASCADE, related_name='orders')
-    item = models.CharField(max_length=50)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    item = models.CharField(max_length=50, blank=False)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
+
+    
 
     def __str__(self) -> str:
         return f'{self.item} - {self.amount}'
