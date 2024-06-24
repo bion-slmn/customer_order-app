@@ -5,3 +5,21 @@ The user of the database is authenticated using OpenID Connect
 http://127.0.0.1:8000/api/get-customers/?customer_id=b5754a20-a458-4c92-b58f-8d398a2f0079
 http://127.0.0.1:8000/api/get-customers/
 
+curl -X POST http://127.0.0.1:8000/api/add-customer/ -H "Content-Type: application/json" -d '{"name": "day"}'
+
+http://127.0.0.1:8000/api/get-orders/?order_id=4e3c08d0-0e2a-45d3-81b3-4746be376a99
+
+http://127.0.0.1:8000/api/get-orders/?customer_id=b5754a20-a458-4c92-b58f-8d398a2f0079
+
+http://127.0.0.1:8000/api/get-orders/
+
+curl localhost:8000/api/delete-order/8a9c07a0-169e-4636-a4d0-2990b86a605bd  -X DELETE
+
+curl -X POST http://127.0.0.1:8000/api/add-order/ -H "Content-Type: application/json" -d '{"customer_id": "eb6dac37-ba91-46f0-a34b-ac32e0dbe535", "item": "phone", "amount": 1212}'
+
+{"id":"b67900f7-dd8d-4059-95a5-5c6e8c282c7a","item":"phone","amount":"1212.00","created_at":"June 23, 2024, 06:02 AM","customer":{"id":"eb6dac37-ba91-46f0-a34b-ac32e0dbe535","name":"John Doe","phone_number":"+1234567890"}}
+
+curl -X PUT http://127.0.0.1:8000/api/update-order/b67900f7-dd8d-4059-95a5-5c6e8c282c7a -H "Content-Type: application/json" -d '{"item": "Laptop", "amount": 500000}'
+
+Returns
+{"id":"b67900f7-dd8d-4059-95a5-5c6e8c282c7a","item":"Laptop","amount":"500000.00","created_at":"June 23, 2024, 06:02 AM","customer":{"id":"eb6dac37-ba91-46f0-a34b-ac32e0dbe535","name":"John Doe","phone_number":"+1234567890"}}
