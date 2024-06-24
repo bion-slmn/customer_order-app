@@ -10,7 +10,10 @@ from .serialisers import CustomerSerialiser, OrderSerialiser
 from django.shortcuts import get_object_or_404
 from  .decorator import handle_exceptions
 from rest_framework.generics import ListAPIView
-
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from .sms_sender import send_sms
+import django_rq
 
 
 class CustomerListView(ListAPIView):
@@ -20,6 +23,8 @@ class CustomerListView(ListAPIView):
     This view retrieves all customer objects from the database and serializes
     them using CustomerSerialiser.
     """
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = Customer.objects.all()
     serializer_class = CustomerSerialiser
 
@@ -31,6 +36,8 @@ class OrderListView(ListAPIView):
     This view retrieves all order objects 
     from the database and serializes them using OrderSerialiser.
     """
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
     queryset = Order.objects.all()
     serializer_class = OrderSerialiser
@@ -44,6 +51,9 @@ class CustomerView(APIView):
     Includes methods for retrieving, creating, updating,
     and deleting Customer objects.
     """
+
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
     @handle_exceptions
     def get(self, request: HttpRequest, customer_id: str) -> Response:
         """
@@ -131,6 +141,8 @@ class OrderView(APIView):
     Includes methods for retrieving, creating, updating,
     and deleting Order objects.
     """
+    #authentication_classes = [SessionAuthentication]
+    #permission_classes = [IsAuthenticated]
 
     @handle_exceptions
     def get(self, request: HttpRequest) -> Response:
@@ -181,10 +193,12 @@ class OrderView(APIView):
         item = request.data.get('item')
         amount = request.data.get('amount')
 
-        get_object_or_404(Customer, id=customer_id)
+        customer = get_object_or_404(Customer, id=customer_id)
         data = {'customer_id': customer_id, 'item': item, 'amount': amount}
 
         order = Order.objects.create(**data)
+        
+        django_rq.enqueue(send_sms, customer.phone_number, {'item': item, 'amount': amount})
         return Response(OrderSerialiser(order).data, 201)
     
     @handle_exceptions

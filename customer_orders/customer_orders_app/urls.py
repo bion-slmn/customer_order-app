@@ -5,6 +5,7 @@ from django.urls import path
 from .views import CustomerView, OrderView, CustomerListView, OrderListView
 
 urlpatterns = [
+    
     # path for CRUD operations for customer
     path('get-customers/', CustomerListView.as_view(), name='all_customers'),
     path('view-customer/<str:customer_id>', CustomerView.as_view(), name='view_customer_info'),
