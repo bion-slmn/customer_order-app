@@ -9,7 +9,7 @@ from rest_framework import serializers
 class BaseSerialiser(serializers.ModelSerializer):
     def create(self, validated_data):
         """
-        Calls the create method of the superclass with 
+        Calls the create method of the superclass with
         the provided validated data.
 
         Args:
@@ -19,7 +19,7 @@ class BaseSerialiser(serializers.ModelSerializer):
             The result of calling the create method of the superclass.
         """
         return super().create(validated_data)
-    
+
     def update(self, instance, validated_data):
         """
         Updates the fields of an object instance with the provided
@@ -48,10 +48,12 @@ class CustomerSerialiser(BaseSerialiser):
     fields of a Customer.
     """
     id = serializers.UUIDField(read_only=True)
+
     class Meta:
         model = Customer
         fields = ['id', 'name', 'phone_number']
-    
+
+
 class OrderSerialiser(BaseSerialiser):
     """
     Serializes Order objects to represent their ID, item,
@@ -61,11 +63,11 @@ class OrderSerialiser(BaseSerialiser):
     and update an existing Order object.
     """
     id = serializers.UUIDField(read_only=True)
-    created_at = serializers.DateTimeField(format="%B %d, %Y, %I:%M %p", read_only=True)
+    created_at = serializers.DateTimeField(
+        format="%B %d, %Y, %I:%M %p", read_only=True)
     customer = CustomerSerialiser(read_only=True)
 
     class Meta:
         model = Order
         fields = ['id', 'item', 'amount', 'created_at', 'customer']
         ordering = ['-created_at']
-

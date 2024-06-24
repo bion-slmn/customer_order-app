@@ -5,12 +5,13 @@ from customer_orders_app.serialisers import CustomerSerialiser, OrderSerialiser
 import uuid
 from django.db.utils import IntegrityError
 
+
 class CustomerSerialiserTests(TestCase):
 
     def setUp(self):
         self.customer_data = {
             'name': 'John Doe',
-            'phone_number': '+1234567890'
+            'phone_number': '+254703045843'
         }
         self.customer = Customer.objects.create(**self.customer_data)
 
@@ -22,7 +23,7 @@ class CustomerSerialiserTests(TestCase):
         expected_data = {
             'id': str(self.customer.id),
             'name': 'John Doe',
-            'phone_number': '+1234567890'
+            'phone_number': '+254703045843'
         }
         self.assertEqual(serializer.data, expected_data)
 
@@ -32,13 +33,13 @@ class CustomerSerialiserTests(TestCase):
         """
         valid_data = {
             'name': 'Jane Doe',
-            'phone_number': '+987654321054'
+            'phone_number': '+254703045833'
         }
         serializer = CustomerSerialiser(data=valid_data)
         self.assertTrue(serializer.is_valid())
         customer = serializer.save()
         self.assertEqual(customer.name, 'Jane Doe')
-        self.assertEqual(customer.phone_number, '+987654321054')
+        self.assertEqual(customer.phone_number, '+254703045833')
 
     def test_deserialization_invalid_data(self):
         """
@@ -50,7 +51,6 @@ class CustomerSerialiserTests(TestCase):
         }
         serializer = CustomerSerialiser(data=invalid_data)
         self.assertFalse(serializer.is_valid())
-        
 
     def test_read_only_id_field(self):
         """
@@ -59,22 +59,23 @@ class CustomerSerialiserTests(TestCase):
         data = {
             'id': '12345',
             'name': 'New Name',
-            'phone_number': '+987654321054'
+            'phone_number': '+254703045543'
         }
         serializer = CustomerSerialiser(instance=self.customer, data=data)
         self.assertTrue(serializer.is_valid())
-    
+
         customer = serializer.save()
         customer = serializer.save()
         self.assertNotEqual(customer.id, '12345')
         self.assertEqual(customer.id, self.customer.id)
         self.assertEqual(customer.name, 'New Name')
-        
+
 
 class OrderSerialiserTests(TestCase):
 
     def setUp(self):
-        self.customer = Customer.objects.create(name='John Doe', phone_number='+1234567890')
+        self.customer = Customer.objects.create(
+            name='John Doe', phone_number='+254703045843')
         self.order_data = {
             'customer': self.customer,
             'item': 'Laptop',
@@ -88,16 +89,17 @@ class OrderSerialiserTests(TestCase):
         """
         serializer = OrderSerialiser(self.order)
         expected_data = {
-            'id': str(self.order.id),
+            'id': str(
+                self.order.id),
             'item': 'Laptop',
             'amount': '999.99',
-            'created_at': self.order.created_at.strftime("%B %d, %Y, %I:%M %p"),
+            'created_at': self.order.created_at.strftime(
+                "%B %d, %Y, %I:%M %p"),
             'customer': {
-                'id': str(self.customer.id),
+                'id': str(
+                    self.customer.id),
                 'name': 'John Doe',
-                'phone_number': '+1234567890'
-            }
-        }
+                'phone_number': '+254703045843'}}
         self.assertEqual(serializer.data, expected_data)
 
     def test_deserialization_valid_data(self):
@@ -111,7 +113,6 @@ class OrderSerialiserTests(TestCase):
         }
         serialiser = OrderSerialiser(data=valid_data)
         self.assertTrue(serialiser.is_valid())
-        
 
     def test_deserialization_invalid_data(self):
         """
@@ -124,7 +125,6 @@ class OrderSerialiserTests(TestCase):
         }
         serializer = OrderSerialiser(data=invalid_data)
         self.assertFalse(serializer.is_valid())
-        
 
     def test_read_only_id_field(self):
         """

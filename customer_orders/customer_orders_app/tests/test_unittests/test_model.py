@@ -15,13 +15,13 @@ from datetime import timezone
 class ModelsTestCase(TestCase):
 
     def setUp(self):
-        self.customer = Customer(name="John Doe", phone_number="+1234567890")
+        self.customer = Customer(name="John Doe", phone_number="+254703045843")
         self.customer.save()
 
     def test_customer_creation(self):
 
         self.assertEqual(self.customer.name, "John Doe")
-        self.assertEqual(self.customer.phone_number, "+1234567890")
+        self.assertEqual(self.customer.phone_number, "+254703045843")
         self.assertIsInstance(self.customer.id, uuid.UUID)
         self.assertFalse(self.customer.orders.all())
 
@@ -83,11 +83,23 @@ class ModelsTestCase(TestCase):
 
     def test_id_is_unique(self):
         customer1 = Customer.objects.create(
-            name="John Doe", phone_number="+1234567890")
+            name="John Doe", phone_number="+254703045840")
         customer2 = Customer.objects.create(
-            name="John Doe", phone_number="+1234567890")
+            name="John Doe", phone_number="+254703045841")
 
         self.assertNotEqual(customer1.id, customer2.id)
+
+    def test_phone_numbers_unique(self):
+        with self.assertRaises(IntegrityError):
+            Customer.objects.create(
+                name="John Doe", phone_number="+254703045843")
+            Customer.objects.create(
+                name="John Doe", phone_number="+254703045843")
+
+    def test_phone_numbers_invalid(self):
+        with self.assertRaises(ValueError):
+            Customer.objects.create(
+                name="John Doe", phone_number="07010230404")
 
     def test_Customer_order_rlationship(self):
         order = Order(
@@ -115,7 +127,7 @@ class OrderModelTest(TestCase):
 
     def setUp(self):
         self.customer = Customer.objects.create(
-            name='John Doe', phone_number="+1234567890")
+            name='John Doe', phone_number="+254703045843")
         self.order = Order.objects.create(
             customer=self.customer,
             item='Bike',

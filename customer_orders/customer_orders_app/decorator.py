@@ -6,7 +6,7 @@ from rest_framework import status
 
 def handle_exceptions(view_func: callable) -> callable:
     """
-    Handles exceptions that may occur in the decorated 
+    Handles exceptions that may occur in the decorated
     view function.
 
     Args:

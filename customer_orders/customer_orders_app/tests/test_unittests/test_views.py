@@ -6,22 +6,24 @@ from customer_orders_app.sms_sender import send_sms
 from django.contrib.auth.models import User
 from unittest.mock import patch
 
+
 class CustomerListViewTests(APITestCase):
     def setUp(self):
         """
         Create some sample customers for testing.
         """
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username='testuser', password='testpassword')
         self.client = APIClient()
         self.client.login(username='testuser', password='testpassword')
-        
+
         self.customer1 = Customer.objects.create(
             name="John Doe",
-            phone_number="+1234567890"
+            phone_number="+254703045840"
         )
         self.customer2 = Customer.objects.create(
             name="Jane Doe",
-            phone_number="+0987654321"
+            phone_number="+254703045841"
         )
         self.url = reverse('all_customers')
 
@@ -56,12 +58,12 @@ class CustomerListViewTests(APITestCase):
         """
         test the pagination
         """
-        for _ in range(15):
+        for n, _ in enumerate(range(3, 13), start=0):
             Customer.objects.create(
-                name="Jane Doe", phone_number="+0987654321")
+                name="Jane Doe", phone_number=f"+25470304587{n}")
 
         response = self.client.get(self.url)
-        self.assertEqual(response.data['count'], 17)
+        self.assertEqual(response.data['count'], 12)
         self.assertEqual(response.data['previous'], None)
         self.assertTrue(response.data['next'])
 
@@ -85,13 +87,14 @@ class CustomerDetailViewTests(APITestCase):
         """
         Create a customer and some orders for testing.
         """
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username='testuser', password='testpassword')
         self.client = APIClient()
         self.client.login(username='testuser', password='testpassword')
 
         self.customer = Customer.objects.create(
             name="John Doe",
-            phone_number="+1234567890"
+            phone_number="+254703045843"
         )
         self.order1 = Order.objects.create(
             customer=self.customer,
@@ -104,6 +107,9 @@ class CustomerDetailViewTests(APITestCase):
             amount=120.00
         )
         self.url = reverse('view_customer_info', args=[self.customer.id])
+
+    def tearDown(self) -> None:
+        Customer.objects.all().delete()
 
     def test_get_customer_details(self):
         """
@@ -167,7 +173,8 @@ class CustomerCreateViewTests(APITestCase):
         """
         Set up the URL for creating customers.
         """
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username='testuser', password='testpassword')
         self.client = APIClient()
         self.client.login(username='testuser', password='testpassword')
 
@@ -216,7 +223,7 @@ class CustomerCreateViewTests(APITestCase):
 
     def test_missing_name_n_invalidPhone_number(self):
         data = {
-            "phone_number": "+254703054"
+            "phone_number": "+254703045843"
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -235,13 +242,14 @@ class CustomerUpdateViewTests(APITestCase):
         """
         Create a sample customer for testing.
         """
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username='testuser', password='testpassword')
         self.client = APIClient()
         self.client.login(username='testuser', password='testpassword')
 
         self.customer = Customer.objects.create(
             name="John Doe",
-            phone_number="+234724234234"
+            phone_number="+254703045843"
         )
         self.url = reverse('update-customer', args=[self.customer.id])
 
@@ -322,13 +330,14 @@ class CustomerDeleteViewTests(APITestCase):
         """
         Create a sample customer for testing.
         """
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username='testuser', password='testpassword')
         self.client = APIClient()
         self.client.login(username='testuser', password='testpassword')
 
         self.customer = Customer.objects.create(
             name="John Doe",
-            phone_number="+1234567890"
+            phone_number="+254703045843"
         )
         self.url = reverse('delete-customer', args=[self.customer.id])
 
@@ -356,17 +365,18 @@ class OrderListViewTests(APITestCase):
         """
         Create sample customers and orders for testing.
         """
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username='testuser', password='testpassword')
         self.client = APIClient()
         self.client.login(username='testuser', password='testpassword')
 
         self.customer1 = Customer.objects.create(
             name="John Doe",
-            phone_number="+1234567890"
+            phone_number="+254703045843"
         )
         self.customer2 = Customer.objects.create(
             name="Jane Doe",
-            phone_number="+0987654321"
+            phone_number="+254703045842"
         )
 
         self.order1 = Order.objects.create(
@@ -461,17 +471,18 @@ class ViewAnOrderTests(APITestCase):
         """
         Create sample customers and orders for testing.
         """
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username='testuser', password='testpassword')
         self.client = APIClient()
         self.client.login(username='testuser', password='testpassword')
 
         self.customer1 = Customer.objects.create(
             name="John Doe",
-            phone_number="+1234567890"
+            phone_number="+254703045843"
         )
         self.customer2 = Customer.objects.create(
             name="Jane Doe",
-            phone_number="+0987654321"
+            phone_number="+254703045844"
         )
 
         self.order1 = Order.objects.create(
@@ -578,13 +589,14 @@ class OrderCreateViewTests(APITestCase):
         """
         Create sample customers for testing.
         """
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username='testuser', password='testpassword')
         self.client = APIClient()
         self.client.login(username='testuser', password='testpassword')
 
         self.customer = Customer.objects.create(
             name="John Doe",
-            phone_number="+1234567890"
+            phone_number="+254703045843"
         )
 
         self.url = reverse('add-order')
@@ -600,13 +612,14 @@ class OrderCreateViewTests(APITestCase):
             'amount': 1212
         }
         response = self.client.post(self.url, data, format='json')
-        
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['item'], data['item'])
         self.assertEqual(response.data['amount'], '1212.00')
         self.assertEqual(response.data['customer']['id'], data['customer_id'])
 
-        mock_enqueue.assert_called_once_with(send_sms, '+1234567890', {'item': 'phone', 'amount': 1212})
+        mock_enqueue.assert_called_once_with(
+            send_sms, '+254703045843', {'item': 'phone', 'amount': 1212})
 
     def test_create_order_invalid_customer(self):
         """
@@ -682,13 +695,14 @@ class OrderUpdateViewTests(APITestCase):
         """
         Create a sample customer and order for testing.
         """
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username='testuser', password='testpassword')
         self.client = APIClient()
         self.client.login(username='testuser', password='testpassword')
 
         self.customer = Customer.objects.create(
             name="John Doe",
-            phone_number="+1234567890"
+            phone_number="+254703045843"
         )
         self.order = Order.objects.create(
             customer=self.customer,

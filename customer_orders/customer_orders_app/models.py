@@ -30,11 +30,13 @@ class Customer(BaseModel):
     Represents a customer in the system.
     """
     name = models.CharField(max_length=50)
-    phone_number = PhoneNumberField()
+    phone_number = PhoneNumberField(unique=True)
 
     def save(self, *args, **kwargs):
         if not isinstance(self.name, str):
             raise ValueError("Name must be a string")
+        if not self.phone_number.is_valid():
+            raise ValueError("Valid phone should be +254703045843")
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
@@ -54,8 +56,6 @@ class Order(BaseModel):
         Customer, on_delete=models.CASCADE, related_name='orders')
     item = models.CharField(max_length=50, blank=False)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
-
-    
 
     def __str__(self) -> str:
         return f'{self.item} - {self.amount}'
