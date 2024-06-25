@@ -8,4 +8,4 @@ python-dotenv==0.21.1
 phonenumbers==8.13.39
 requests==2.22.0
 PyJWT==2.3.0
-
+cryptography==3.4.7
