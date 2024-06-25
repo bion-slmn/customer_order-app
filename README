@@ -1,6 +1,6 @@
 This project creates a simple database for Customer and orders in django and using Django Restframework to create APIs to perform create, read, update and delete operation on the database.
 
-The user of the database is authenticated using OpenID Connect
+The user of the database is authenticated using OpenID Connect. User must login using google
 
 http://127.0.0.1:8000/api/get-customers/?customer_id=b5754a20-a458-4c92-b58f-8d398a2f0079
 http://127.0.0.1:8000/api/get-customers/
@@ -23,3 +23,5 @@ curl -X PUT http://127.0.0.1:8000/api/update-order/b67900f7-dd8d-4059-95a5-5c6e8
 
 Returns
 {"id":"b67900f7-dd8d-4059-95a5-5c6e8c282c7a","item":"Laptop","amount":"500000.00","created_at":"June 23, 2024, 06:02 AM","customer":{"id":"eb6dac37-ba91-46f0-a34b-ac32e0dbe535","name":"John Doe","phone_number":"+1234567890"}}
+
+curl -X POST http://127.0.0.1:8000/api/add-order/ -H "Content-Type: application/json" -d '{"customer_id": "f46c5791-4970-44ff-91f8-22f5a5bde409", "item": "phone", "amount": 1212}'
