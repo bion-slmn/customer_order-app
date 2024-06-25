@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -101,15 +103,8 @@ if os.environ.get('GITHUB_WORKFLOW'):
     }
 else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.getenv('DB_NAME'), 
-            'USER': os.getenv('DB_USER'), 
-            'PASSWORD': os.getenv('DB_PASSWORD'),
-            'HOST': '127.0.0.1', 
-            'PORT': '5432',
-        }
-    }
+	"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
+}
 
 RQ_QUEUES = {
     'default': {
