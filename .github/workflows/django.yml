@@ -38,5 +38,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        python python3 customer_orders/manage.py test customer_orders_app
-.tests
+        python customer_orders/manage.py test customer_orders_app.tests
