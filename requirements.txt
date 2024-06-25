@@ -11,3 +11,5 @@ PyJWT==2.3.0
 cryptography==3.4.7
 gunicorn==22.0.0
 dj-database-url==2.2.0
+whitenoise==6.7.0
+uvicorn==0.30.1
