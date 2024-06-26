@@ -1,28 +1,151 @@
-This project creates a simple database for Customer and orders in django and using Django Restframework to create APIs to perform create, read, update and delete operation on the database.
+# CUSTOMER - ORDER PROJECT
+
+This project creates a database for Customer and orders in django and using Django Restframework.
+We create APIs to perform create, read, update and delete operation on the database.
+
+Every Item must have a customer, and on creation of the order, an SMS is sent to the customer
 
 The user of the database is authenticated using OpenID Connect. User must login using google. 
-All we shall use session to authenticate all user
+All end points are protected, hence user must sign in. 
+The APIs are designed to be used on the browser, session_id and crsftoken plus Referer in the header
 
-http://127.0.0.1:8000/api/get-customers/?customer_id=b5754a20-a458-4c92-b58f-8d398a2f0079
-http://127.0.0.1:8000/api/get-customers/
 
-curl -X POST http://127.0.0.1:8000/api/add-customer/ -H "Content-Type: application/json" -d '{"name": "day"}'
 
-http://127.0.0.1:8000/api/get-orders/?order_id=4e3c08d0-0e2a-45d3-81b3-4746be376a99
+## HOW TO USE END POINTS
 
-http://127.0.0.1:8000/api/get-orders/?customer_id=b5754a20-a458-4c92-b58f-8d398a2f0079
+### LOGINNING IN TO THE SITE
+Visit the homepage which is currently, the user has to login with google page
+```
+ https://customer-order-project.onrender.com/
+```
 
-http://127.0.0.1:8000/api/get-orders/
+### VIEWING ALL CUSTOMERS
+All customers are displayed accorded to the date of creation, this is paginated.
+It show 10 customers at time
 
-curl localhost:8000/api/delete-order/8a9c07a0-169e-4636-a4d0-2990b86a605bd  -X DELETE
+Use endpoint
+> GET /api/get-customers
+```
+https://customer-order-project.onrender.com/api/get-customers/
+```
 
-curl -X POST http://127.0.0.1:8000/api/add-order/ -H "Content-Type: application/json" -d '{"customer_id": "eb6dac37-ba91-46f0-a34b-ac32e0dbe535", "item": "phone", "amount": 1212}'
+### To view a specific customer and all the the orders, customer id is passsed as argument
+The id of the customer is passed as an argument
+Use Endpoint
+> GET /api//view-customer/customer_id
+```
+https://customer-order-project.onrender.com/api/view-customer/0b811f4f-7116-4502-93d8-30d8fced278c
+```
 
-{"id":"b67900f7-dd8d-4059-95a5-5c6e8c282c7a","item":"phone","amount":"1212.00","created_at":"June 23, 2024, 06:02 AM","customer":{"id":"eb6dac37-ba91-46f0-a34b-ac32e0dbe535","name":"John Doe","phone_number":"+1234567890"}}
+### TO ADD A CUSTOMER TO THE DATABASE 
+To add a customer to the database, You pass the name and a phone_number which must start with country code, such as
++254704044033 will be accepted, while 0704044033 will be rejected as invalid.
+Each customer must have a unique phone number
+> POST /api/add-customer/
+```
+curl "https://customer-order-project.onrender.com/api/add-customer/" -H "Cookie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h" -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com" -H "Content-Type: application/json"  -d '{"name": "boss", "phone_number": "+254701036054"}'
+```
 
-curl -X PUT http://127.0.0.1:8000/api/update-order/b67900f7-dd8d-4059-95a5-5c6e8c282c7a -H "Content-Type: application/json" -d '{"item": "Laptop", "amount": 500000}'
+Returns 
+```
+{"id":"252f5004-53f0-4ba3-bbf0-7216322f4cf5","name":"boss","phone_number":"+254701036057"} 
+
+```
+
+### TO UPDATE A CUSTOMER
+> PUT /api/update-customer/customer_id
+```
+curl -X PUT "https://customer-order-project.onrender.com/api/update-customer/252f5004-53f0-4ba3-bbf0-7216322f4cf5/" -H "Cookie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h" -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com" -H "Content-Type: application/json"  -d '{"name": "bosslady"}'
+```
+Returns
+```
+{"id":"252f5004-53f0-4ba3-bbf0-7216322f4cf5","name":"bosslady","phone_number":"+254701036057"}
+```
+
+
+### TO VIEW ALL ORDERS
+> GET api/get-orders/
+```
+curl  "https://customer-order-project.onrender.com/api/get-orders/" -H "Cookie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h" -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com" 
+```
 
 Returns
-{"id":"b67900f7-dd8d-4059-95a5-5c6e8c282c7a","item":"Laptop","amount":"500000.00","created_at":"June 23, 2024, 06:02 AM","customer":{"id":"eb6dac37-ba91-46f0-a34b-ac32e0dbe535","name":"John Doe","phone_number":"+1234567890"}}
 
-curl -X POST http://127.0.0.1:8000/api/add-order/ -H "Content-Type: application/json" -d '{"customer_id": "f46c5791-4970-44ff-91f8-22f5a5bde409", "item": "phone", "amount": 1212}'
+```
+{
+  "count": 8,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": "3f3b4d4d-862a-415d-8aaa-1aafb045d9fa",
+      "item": "borns",
+      "amount": "500.00",
+      "created_at": "June 25, 2024, 05:54 PM",
+      "customer": {
+        "id": "0b811f4f-7116-4502-93d8-30d8fced278c",
+        "name": "boss",
+        "phone_number": "+254701036054"
+      }
+    },
+    {
+      "id": "862a4f4e-e3b7-4228-b0d5-31f164b7adcd",
+      "item": "borns",
+      "amount": "500.00",
+      "created_at": "June 26, 2024, 03:01 AM",
+      "customer": {
+        "id": "0b811f4f-7116-4502-93d8-30d8fced278c",
+        "name": "boss",
+        "phone_number": "+254701036054"
+      }
+    } ...........
+  ]
+}
+```
+
+### TO VIEW A SPECIFIC ORDER
+Pass the order id to see all details of a speccific order or customer_id as a query parameter
+> GET api/view-order/?order_id=121212121
+```
+To view a specific order_id, pass the order id is a query parameter
+curl  "https://customer-order-project.onrender.com/api/view-order/?order_id=3f3b4d4d-862a-415d-8aaa-1aafb045d9fa"      -H "Coo
+kie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h"      -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com"
+```
+
+Return
+``` 
+{
+  "id": "3f3b4d4d-862a-415d-8aaa-1aafb045d9fa",
+  "item": "borns",
+  "amount": "500.00",
+  "created_at": "June 25, 2024, 05:54 PM",
+  "customer": {
+    "id": "0b811f4f-7116-4502-93d8-30d8fced278c",
+    "name": "boss",
+    "phone_number": "+254701036054"
+  }
+}
+```
+You can also pass the customer_id to see orders of a specific customer
+
+
+## TO ADD AN ORDER
+You have to pass the customer Id and the data of the order in the payload
+> POST api/add-order/
+```
+curl -X POST "https://customer-order-project.onrender.com/api/add-order/" -H "Content-Type: application/json" -H "Cookie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h" -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com" -d '{    "customer_id": "bdb0aeee-2370-484e-b098-cdf05da9f2df",    "item": "example_item",    "amount": 100}'
+```
+Returns
+```
+{
+  "id": "71f6965a-8ee1-40c6-aa2b-2ce2b48f115f",
+  "item": "example_item",
+  "amount": "100.00",
+  "created_at": "June 26, 2024, 07:45 AM",
+  "customer": {
+    "id": "bdb0aeee-2370-484e-b098-cdf05da9f2df",
+    "name": "12345sdsds",
+    "phone_number": "+254701032023"
+  }
+}
+```
