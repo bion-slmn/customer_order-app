@@ -1,4 +1,4 @@
-#CUSTOMER - ORDER PROJECT
+### CUSTOMER - ORDER PROJECT
 
 This project creates a database for Customer and orders in django and using Django Restframework.
 We create APIs to perform create, read, update and delete operation on the database.
