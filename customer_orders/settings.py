@@ -117,7 +117,7 @@ else:
 
 RQ_QUEUES = {
     'default': {
-        'URL': os.getenv('REDIS_URL')
+        'URL': 'redis://red-cpthasd2ng1s73e15n20:6379'
     },
 }
 
