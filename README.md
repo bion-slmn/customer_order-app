@@ -7,11 +7,16 @@ Every Item must have a customer, and on creation of the order, an SMS is sent to
 
 The user of the database is authenticated using OpenID Connect. User must login using google. 
 All end points are protected, hence user must sign in. 
-The APIs are designed to be used on the browser, session_id and crsftoken plus Referer in the header
 
+The APIs are designed to be used on the browser.
+Session_id, crsftoken plus Referer in the header must be passed in the header,
+A browser will automatically send them after logging in,
+However in curl, you must pass them manully
 
+Database was created using POSTGRESQL
 
 ## HOW TO USE END POINTS
+### Since its hosted on render free platform, the server can sometime hibernate on inactivity and hence slow to start
 
 ### LOGINNING IN TO THE SITE
 Visit the homepage which is currently, the user has to login with google page
@@ -105,9 +110,9 @@ Returns
 
 ### TO VIEW A SPECIFIC ORDER
 Pass the order id to see all details of a speccific order or customer_id as a query parameter
+To view a specific order_id, pass the order id is a query parameter
 > GET api/view-order/?order_id=121212121
 ```
-To view a specific order_id, pass the order id is a query parameter
 curl  "https://customer-order-project.onrender.com/api/view-order/?order_id=3f3b4d4d-862a-415d-8aaa-1aafb045d9fa"      -H "Coo
 kie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h"      -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com"
 ```
