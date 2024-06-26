@@ -116,6 +116,7 @@ RQ_QUEUES = {
     },
 }
 
+SESSION_COOKIE_HTTPONLY = True
 
 
 
