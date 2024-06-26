@@ -148,8 +148,8 @@ class OrderView(APIView):
     Includes methods for retrieving, creating, updating,
     and deleting Order objects.
     """
-    # authentication_classes = [SessionAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
     @handle_exceptions
     def get(self, request: HttpRequest) -> Response:
