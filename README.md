@@ -3,7 +3,7 @@
 This project creates a database for Customer and orders in django and using Django Restframework.
 We create APIs to perform create, read, update and delete operation on the database.
 
-Every Item must have a customer, and on creation of the order, an SMS is sent to the customer
+Every order must have a customer, and on creation of the order, an SMS is sent to the customer
 
 The user of the database is authenticated using OpenID Connect. User must login using google. 
 All end points are protected, hence user must sign in. 
@@ -13,16 +13,23 @@ Session_id, crsftoken plus Referer in the header must be passed in the header,
 A browser will automatically send them after logging in,
 However in curl, you must pass them manully
 
+Please Note that the cookies used in the examples have long exipired
+
+
+This app was built on linux and runs on python 3.8 and above
 Database was created using POSTGRESQL
+
 
 ## HOW TO USE END POINTS
 ### Since its hosted on render free platform, the server can sometime hibernate on inactivity and hence slow to start
 
-### LOGINNING IN TO THE SITE
-Visit the homepage which is currently, the user has to login with google page
+### LOGINING IN TO THE SITE
+Visit the homepage, where the user has to login with google page
 ```
  https://customer-order-project.onrender.com/
 ```
+Obtain the crsf token and session_id from the browser call 
+all other endpoints without endpints
 
 ### VIEWING ALL CUSTOMERS
 All customers are displayed accorded to the date of creation, this is paginated.
@@ -45,10 +52,11 @@ https://customer-order-project.onrender.com/api/view-customer/0b811f4f-7116-4502
 ### TO ADD A CUSTOMER TO THE DATABASE 
 To add a customer to the database, You pass the name and a phone_number which must start with country code, such as
 +254704044033 will be accepted, while 0704044033 will be rejected as invalid.
+Inccluding an email is optional
 Each customer must have a unique phone number
 > POST /api/add-customer/
 ```
-curl "https://customer-order-project.onrender.com/api/add-customer/" -H "Cookie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h" -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com" -H "Content-Type: application/json"  -d '{"name": "boss", "phone_number": "+254701036054"}'
+curl "https://customer-order-project.onrender.com/api/add-customer/" -H "Cookie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h12" -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com" -H "Content-Type: application/json"  -d '{"name": "boss", "phone_number": "+254701036054"}'
 ```
 
 Returns 
@@ -60,18 +68,20 @@ Returns
 ### TO UPDATE A CUSTOMER
 > PUT /api/update-customer/customer_id
 ```
-curl -X PUT "https://customer-order-project.onrender.com/api/update-customer/252f5004-53f0-4ba3-bbf0-7216322f4cf5/" -H "Cookie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h" -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com" -H "Content-Type: application/json"  -d '{"name": "bosslady"}'
+curl -X PUT "https://customer-order-project.onrender.com/api/update-customer/252f5004-53f0-4ba3-bbf0-7216322f4cf5/" -H "Cookie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h12" -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com" -H "Content-Type: application/json"  -d '{"name": "bosslady"}'
 ```
 Returns
 ```
 {"id":"252f5004-53f0-4ba3-bbf0-7216322f4cf5","name":"bosslady","phone_number":"+254701036057"}
 ```
-
+## CRUD OPERATION OF ORDERS
+An order should have the name of the item, amount and customer id.
+Each item can only have one customer
 
 ### TO VIEW ALL ORDERS
 > GET api/get-orders/
 ```
-curl  "https://customer-order-project.onrender.com/api/get-orders/" -H "Cookie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h" -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com" 
+curl  "https://customer-order-project.onrender.com/api/get-orders/" -H "Cookie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h12" -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com" 
 ```
 
 Returns
@@ -114,7 +124,7 @@ To view a specific order_id, pass the order id is a query parameter
 > GET api/view-order/?order_id=121212121
 ```
 curl  "https://customer-order-project.onrender.com/api/view-order/?order_id=3f3b4d4d-862a-415d-8aaa-1aafb045d9fa"      -H "Coo
-kie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h"      -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com"
+kie: csrftoken=MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD; sessionid=rxhvjf48uyi8nmyrajwpht5hqlhdfx9h12"      -H "X-CSRFToken: MduNeLVLgOdbIRAd3u3ftwb1Bso3DOSD" -H "Referer: https://customer-order-project.onrender.com"
 ```
 
 Return
