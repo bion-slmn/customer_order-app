@@ -31,6 +31,10 @@ Visit the homepage, where the user has to login with google page
 Obtain the crsf token and session_id from the browser call 
 all other endpoints if you will use curl
 
+## CUSTOMER
+A customer has a name, code(id), and phone_number. Here the code/id is a unique number and system generated.
+The phone number must also be unique, and must start with a country code.
+
 ### VIEWING ALL CUSTOMERS
 All customers are displayed accorded to the date of creation, this is paginated.
 It show 10 customers at time
@@ -52,7 +56,7 @@ https://customer-order-project.onrender.com/api/view-customer/0b811f4f-7116-4502
 ### TO ADD A CUSTOMER TO THE DATABASE 
 To add a customer to the database, You pass the name and a phone_number which must start with country code, such as
 +254704044033 will be accepted, while 0704044033 will be rejected as invalid.
-Inccluding an email is optional
+
 Each customer must have a unique phone number
 > POST /api/add-customer/
 ```
@@ -76,6 +80,7 @@ Returns
 ```
 ## CRUD OPERATION OF ORDERS
 An order should have the name of the item, amount and customer id.
+The system automatically generates an id for each order which is unique
 Each item can only have one customer
 
 ### TO VIEW ALL ORDERS
