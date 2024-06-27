@@ -164,3 +164,8 @@ Returns
   }
 }
 ```
+An sms is sent to the customer using as shown below. 
+
+![AFRICA ISTALKING SIMULATOR](https://github.com/bion-slmn/customer_order_project/assets/122830539/6197d46a-9d1c-44f6-8d87-8e9496e096cb)
+
+
