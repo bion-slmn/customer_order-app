@@ -29,7 +29,7 @@ Visit the homepage, where the user has to login with google page
  https://customer-order-project.onrender.com/
 ```
 Obtain the crsf token and session_id from the browser call 
-all other endpoints without endpints
+all other endpoints if you will use curl
 
 ### VIEWING ALL CUSTOMERS
 All customers are displayed accorded to the date of creation, this is paginated.
