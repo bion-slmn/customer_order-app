@@ -10,7 +10,9 @@ from .serialisers import CustomerSerialiser, OrderSerialiser
 from django.shortcuts import get_object_or_404
 from .decorator import handle_exceptions
 from rest_framework.generics import ListAPIView
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import (
+    SessionAuthentication,
+    TokenAuthentication)
 from rest_framework.permissions import IsAuthenticated
 from .sms_sender import send_sms
 import django_rq
@@ -21,6 +23,18 @@ class ObtainToken(APIView):
 
     @handle_exceptions
     def get(self, request):
+        """
+        Handles GET request to retrieve or create a
+        token for the authenticated user.
+
+        Args:
+            self
+
+        Returns:
+            Response: A JSON response containing the
+            token key with a status code of 200.
+        """
+
         user = request.user
         token, _ = Token.objects.get_or_create(user=user)
         return Response({'token': token.key}, status=200)
@@ -34,7 +48,7 @@ class CustomerListView(ListAPIView):
     This view retrieves all customer objects from the database and serializes
     them using CustomerSerialiser.
     """
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = Customer.objects.all()
     serializer_class = CustomerSerialiser
@@ -47,7 +61,7 @@ class OrderListView(ListAPIView):
     This view retrieves all order objects
     from the database and serializes them using OrderSerialiser.
     """
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     queryset = Order.objects.all()
@@ -62,7 +76,7 @@ class CustomerView(APIView):
     and deleting Customer objects.
     """
 
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     @handle_exceptions
@@ -159,7 +173,7 @@ class OrderView(APIView):
     Includes methods for retrieving, creating, updating,
     and deleting Order objects.
     """
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     @handle_exceptions
