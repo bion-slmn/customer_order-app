@@ -19,6 +19,7 @@ import django_rq
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 class ProtectedTokenObtainPairView(TokenObtainPairView):
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     
 
