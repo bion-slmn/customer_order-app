@@ -16,6 +16,13 @@ from .sms_sender import send_sms
 import django_rq
 
 
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+class ProtectedTokenObtainPairView(TokenObtainPairView):
+    permission_classes = [IsAuthenticated]
+    
+
+
 class CustomerListView(ListAPIView):
     """
     A view that returns a list of all customers. Pagination is added

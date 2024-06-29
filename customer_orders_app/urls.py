@@ -2,7 +2,10 @@
 Module defines routes for Customer and Order Views
 '''
 from django.urls import path
-from .views import CustomerView, OrderView, CustomerListView, OrderListView
+from .views import (
+    CustomerView, OrderView,
+    CustomerListView, OrderListView, 
+    ProtectedTokenObtainPairView)
 
 urlpatterns = [
 
@@ -14,7 +17,7 @@ urlpatterns = [
         name='view_customer_info'),
     path('add-customer/', CustomerView.as_view(), name='add-customer'),
     path(
-        'update-customer/<str:customer_id>/',
+        'update-customer/<str:customer_id>',
         CustomerView.as_view(),
         name="update-customer"),
     path(
@@ -30,4 +33,6 @@ urlpatterns = [
         'update-order/<str:order_id>',
         OrderView.as_view(),
         name='update-order'),
+
+    path('token/', ProtectedTokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
