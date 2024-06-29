@@ -5,7 +5,7 @@ from django.urls import path
 from .views import (
     CustomerView, OrderView,
     CustomerListView, OrderListView, 
-    ProtectedTokenObtainPairView)
+    ObtainToken)
 
 urlpatterns = [
 
@@ -34,5 +34,5 @@ urlpatterns = [
         OrderView.as_view(),
         name='update-order'),
 
-    path('token/', ProtectedTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/', ObtainToken.as_view(), name='token_obtain_pair'),
 ]

@@ -14,13 +14,16 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .sms_sender import send_sms
 import django_rq
+from rest_framework.authtoken.models import Token
 
 
-from rest_framework_simplejwt.views import TokenObtainPairView
+class ObtainToken(APIView):
 
-class ProtectedTokenObtainPairView(TokenObtainPairView):
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    @handle_exceptions
+    def get(self, request):
+        user = request.user
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=200)
     
 
 
